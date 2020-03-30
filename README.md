@@ -32,7 +32,7 @@ To get you started all you need to do is:
 - Open a terminal/console window.
 - Clone this repo: 
     ```shell
-    $ git clone git@github.com:volvo-cars/signalbroker-server.git`
+    $ git clone git@github.com:volvo-cars/signalbroker-server.git
     ```
 - Move to the new folder: 
     ```shell
@@ -74,13 +74,13 @@ In order to access real CAN the following hardware can be used.
 Suggested hardware
 - Raspberry PI.
 - Raspberry PI CAN shield [get it here for US](https://copperhilltech.com/pican2-duo-can-bus-board-for-raspberry-pi-2-3/) or [here for Europe](http://skpang.co.uk/catalog/pican2-duo-canbus-board-for-raspberry-pi-23-with-smps-p-1481.html).
-- [lin DYI](https://github.com/volvo-cars/signalbroker-lin-transceiver/tree/master)
+- [lin DIY](https://github.com/AleksandarFilipov/signalbroker-lin-transceiver)
 
 Works is ongoing for CAN-FD support which is in experimental stage.
 - Raspberry PI CAN-FD shield [get it here for US](https://copperhilltech.com/pican-fd-can-bus-fd-duo-board-with-real-time-clock-for-raspberry-pi/) or [here for Europe](http://skpang.co.uk/catalog/pican-fd-duo-board-with-real-time-clock-for-raspberry-pi-3-p-1568.html)
 
 ## Accessing the server
-Signalbroker is headless but can be accessed using the grpc-web [frontend](https://github.com/volvo-cars/signalbroker-web-client)
+Signalbroker is headless but can be accessed using the grpc-web [frontend](https://github.com/AleksandarFilipov/signalbroker-web-client)
 
 To get aquainted to the system the easiest way to get going is by checking out the simple [telnet guide](apps/app_telnet/README.md)
 
@@ -138,11 +138,11 @@ you can change the default values used by docker compose. To read more about "Va
 - Clone this repository (to get the a valid configuration folder), then;
 
 ```bash
-docker run --rm -it --privileged=true --net=host -v $PWD/configuration/:/signalbroker/_build/prod/rel/signal_server/configuration aleksandarf/signalbroker-server::travis-81-amd64
+docker run --rm -it --privileged=true --net=host -v $PWD/configuration/:/signalbroker/_build/prod/rel/signal_server/configuration aleksandarf/signalbroker-server:travis-81-amd64
 ```
 If you are in MacOS or Windows `--net=host` is not available and you need to do the port mapping:
 ```bash
-docker run --rm -it --privileged=true -p 4040:4040 -p 50051:50051 -p 2000:2000/udp -p 2001:2001/udp -v $PWD/configuration/:/signalbroker/_build/prod/rel/signal_server/configuration aleksandarf/signalbroker-server::travis-81-amd64
+docker run --rm -it --privileged=true -p 4040:4040 -p 50051:50051 -p 2000:2000/udp -p 2001:2001/udp -v $PWD/configuration/:/signalbroker/_build/prod/rel/signal_server/configuration aleksandarf/signalbroker-server:travis-81-amd64
 ```
 
 ### or run it with sample configuration:
