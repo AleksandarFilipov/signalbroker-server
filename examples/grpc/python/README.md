@@ -11,7 +11,9 @@ https://grpc.io/docs/tutorials/basic/python.html
 proto files are available in: [signal_server/apps/grpc_service/proto_files/](/apps/grpc_service/proto_files/)
 
 ## Setup
+```bash
 pip install grpcio-tools
+```
 
 to re-generate files (already generated in the [generated](generated/) folder)
 
