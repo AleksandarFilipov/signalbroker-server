@@ -1,3 +1,7 @@
+# Important - REDIRECT
+
+This repository is stale. Please go [here](https://github.com/AleksandarFilipov/signalbroker-server) to get access to the most recent code. 
+
 # Signalbroker
 
 [![Build Status](https://travis-ci.com/volvo-cars/signalbroker-server.svg?branch=master)](https://travis-ci.com/volvo-cars/signalbroker-server)
