@@ -1,7 +1,6 @@
 # Signalbroker
 
-[![Build Status](https://travis-ci.com/volvo-cars/signalbroker-server.svg?branch=master)](https://travis-ci.com/volvo-cars/signalbroker-server)
-
+[![Build Status](https://travis-ci.com/AleksandarFilipov/signalbroker-server.svg?branch=master)](https://travis-ci.com/github/AleksandarFilipov/signalbroker-server)
 Development tool to read and write CAN/LIN and other buses using gRPC which allows usage of preferred language.
 
 Sample scenarios:
