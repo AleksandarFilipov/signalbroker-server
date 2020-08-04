@@ -17,7 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 # Import all plugins from `rel/plugins`
 # They can then be used by adding `plugin MyPlugin` to
 # either an environment, or release definition, where
@@ -27,14 +26,13 @@ Path.join(["rel", "plugins", "*.exs"])
 |> Enum.map(&Code.eval_file(&1))
 
 use Mix.Releases.Config,
-    # This sets the default release built by `mix release`
-    default_release: :default,
-    # This sets the default environment used by `mix release`
-    default_environment: Mix.env()
+  # This sets the default release built by `mix release`
+  default_release: :default,
+  # This sets the default environment used by `mix release`
+  default_environment: Mix.env()
 
 # For a full list of config options for both releases
 # and environments, visit https://hexdocs.pm/distillery/configuration.html
-
 
 # You may define one or more environments in this file,
 # an environment's settings will override those of a release
@@ -48,31 +46,44 @@ environment :dev do
   # It is recommended that you build with MIX_ENV=prod and pass
   # the --env flag to Distillery explicitly if you want to use
   # dev mode.
-  set dev_mode: true
-  set include_erts: false
-  set cookie: :"Q]K37*)C^bjTZOchHqXr$j(J3~a1:H1p!3RTW(oEs!zYilyS%G*Zn!/SxacNl{@G"
+  set(dev_mode: true)
+  set(include_erts: false)
+  set(cookie: :"Q]K37*)C^bjTZOchHqXr$j(J3~a1:H1p!3RTW(oEs!zYilyS%G*Zn!/SxacNl{@G")
 end
 
 environment :prod do
-  set include_erts: true
-  set include_src: false
-  set cookie: :"bqCJb4j$[SZ1/H6@2{oJ6GQ&KEC0N2P$bc!Jpi~1>/9E?vG!Es=Ow0qFb!HZ&Gf)"
+  set(include_erts: true)
+  set(include_src: false)
+  set(cookie: :"bqCJb4j$[SZ1/H6@2{oJ6GQ&KEC0N2P$bc!Jpi~1>/9E?vG!Es=Ow0qFb!HZ&Gf)")
 end
 
-# Get git based version
 defmodule GitVersion do
-  def get() do
-    with {out, 0} <- System.cmd("git", ~w[describe --tags --dirty], stderr_to_stdout: true) do
-      out
-      |> String.trim()
-      |> String.split("-")
-      |> Enum.take(2)
-      |> Enum.join(".")
-      |> String.trim_leading("v")
-    else
-      _ -> "0.1.0"
+  def get do
+    case System.cmd(
+           "git",
+           ~w[describe --always --dirty],
+           stderr_to_stdout: true
+         ) do
+      {raw, 0} ->
+        case Version.parse(raw) do
+          {:ok, version} ->
+            version
+            |> bump_version()
+            |> to_string()
+
+          :error ->
+            "0.0.0-#{String.trim(raw)}"
+        end
+
+      _ ->
+        "0.0.0-dev"
     end
   end
+
+  defp bump_version(%Version{pre: []} = version), do: version
+
+  defp bump_version(%Version{patch: p} = version),
+    do: struct(version, patch: p + 1)
 end
 
 # You may define one or more releases in this file.
@@ -81,23 +92,26 @@ end
 # will be used by default
 
 release :signal_server do
-  set version: GitVersion.get()
-  set applications: [
-    :runtime_tools,
-    app_counter: :permanent,
-    app_debug: :permanent,
-    app_lin: :permanent,
-    app_telnet: :permanent,
-    app_ngcan: :permanent,
-    app_udpcan: :permanent,
-    app_unixds: :permanent,
-    payload: :permanent,
-    diagnostics: :permanent,
-    fake_can: :permanent,
-    reflector: :permanent,
-    signal_base: :permanent,
-    util: :permanent,
-    grpc_service: :permanent,
-    flexray: :permanent,
-  ]
+  set(version: GitVersion.get())
+
+  set(
+    applications: [
+      :runtime_tools,
+      app_counter: :permanent,
+      app_debug: :permanent,
+      app_lin: :permanent,
+      app_telnet: :permanent,
+      app_ngcan: :permanent,
+      app_udpcan: :permanent,
+      app_unixds: :permanent,
+      payload: :permanent,
+      diagnostics: :permanent,
+      fake_can: :permanent,
+      reflector: :permanent,
+      signal_base: :permanent,
+      util: :permanent,
+      grpc_service: :permanent,
+      flexray: :permanent
+    ]
+  )
 end
