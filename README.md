@@ -272,8 +272,8 @@ Feed your Signalbroker with data over udp as described as [above](#running-examp
 - [x] Add default configuration.
 - [x] Add gRPC sample code.
 - [x] Publish repository for creating custom LIN hardware.
-- [ ] Add sample dbc files.
-- [ ] Re-enable test suite.
+- [x] Add sample dbc files.
+- [x] Re-enable test suite.
 - [x] ~~Make code (branch) runnable on mac where SocketCan is missing~~ fixed with fakecan
 - [x] Add example on how to feed server with (can) traffic over udp. Enables traffic simulation on osx/mac.
 - [ ] Add bash/py script which playbacks recorded can traffic using udp
