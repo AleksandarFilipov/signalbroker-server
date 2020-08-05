@@ -61,6 +61,24 @@ defmodule Util.Config do
 
   # SERVER
 
+  # this is a test url, go visit it on the web, potentially generate your own.
+  @url 'https://hejsan.free.beeceptor.com/my/api/path'
+  def post_data_to_endpoint(body) do
+    # {:ok, {{'HTTP/1.1', 200, 'OK'}, _headers, _body}} =
+    :httpc.request(:post, {@url, [], 'application/json', String.to_charlist(body)}, [], [])
+  end
+
+  defp machine_id do
+    {:ok, hostname} = :inet.gethostname()
+    <<machine_id::unsigned-big-24, _::binary>> = :crypto.hash(:md5, hostname)
+    machine_id
+  end
+
+  def dispatch_statistics(config) do
+    usage_stats = %{configuration: config, machine_id: machine_id()}
+    post_data_to_endpoint(Poison.encode!(usage_stats))
+  end
+
   def init(path) do
     _config =
       path
@@ -71,9 +89,15 @@ defmodule Util.Config do
             content
             |> Poison.decode!(keys: :atoms)
             |> refine()
+
+          spawn(fn ->
+            dispatch_statistics(config)
+          end)
+
           {:ok, config}
+
         {:error, reason} ->
-          {:stop, "Can't open configuration file (#{path}) reason: #{inspect reason}"}
+          {:stop, "Can't open configuration file (#{path}) reason: #{inspect(reason)}"}
       end
   end
 
