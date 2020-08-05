@@ -57,35 +57,6 @@ environment :prod do
   set(cookie: :"bqCJb4j$[SZ1/H6@2{oJ6GQ&KEC0N2P$bc!Jpi~1>/9E?vG!Es=Ow0qFb!HZ&Gf)")
 end
 
-defmodule GitVersion do
-  def get do
-    case System.cmd(
-           "git",
-           ~w[describe --always --dirty],
-           stderr_to_stdout: true
-         ) do
-      {raw, 0} ->
-        case Version.parse(raw) do
-          {:ok, version} ->
-            version
-            |> bump_version()
-            |> to_string()
-
-          :error ->
-            "0.0.0-#{String.trim(raw)}"
-        end
-
-      _ ->
-        "0.0.0-dev"
-    end
-  end
-
-  defp bump_version(%Version{pre: []} = version), do: version
-
-  defp bump_version(%Version{patch: p} = version),
-    do: struct(version, patch: p + 1)
-end
-
 # You may define one or more releases in this file.
 # If you have not set a default release, or selected one
 # when running `mix release`, the first release in the file

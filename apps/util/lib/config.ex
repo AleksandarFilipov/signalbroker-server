@@ -62,10 +62,14 @@ defmodule Util.Config do
   # SERVER
 
   # this is a test url, go visit it on the web, potentially generate your own.
-  @url 'https://hejsan.free.beeceptor.com/my/api/path'
-  def post_data_to_endpoint(body) do
+  def post_data_to_endpoint(url, body) do
     # {:ok, {{'HTTP/1.1', 200, 'OK'}, _headers, _body}} =
-    :httpc.request(:post, {@url, [], 'application/json', String.to_charlist(body)}, [], [])
+    :httpc.request(
+      :post,
+      {String.to_charlist(url), [], 'application/json', String.to_charlist(body)},
+      [],
+      []
+    )
   end
 
   defp machine_id do
@@ -74,9 +78,10 @@ defmodule Util.Config do
     machine_id
   end
 
+  @url "https://www.beamylabs.com/usage"
   def dispatch_statistics(config) do
-    usage_stats = %{configuration: config, machine_id: machine_id()}
-    post_data_to_endpoint(Poison.encode!(usage_stats))
+    usage_stats = %{configuration: config, machine_id: machine_id(), version: GitVersion.get()}
+    post_data_to_endpoint(Map.get(config, :usage_endpoint, @url), Poison.encode!(usage_stats))
   end
 
   def init(path) do
