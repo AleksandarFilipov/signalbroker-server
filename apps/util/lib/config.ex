@@ -82,19 +82,18 @@ defmodule Util.Config do
     Enum.map(addresses, fn {name, address} -> %{if: name, adr: encode_address(address)} end)
   end
 
-  @file_name "configuration/boot"
-  def update_data do
+  def update_data(file_name) do
     store =
-      case File.read(@file_name) do
+      case File.read(file_name) do
         {:ok, data} ->
           Poison.decode!(data, keys: :atoms)
         _ ->
-          %{starts: [], machine_id: machine_id(), version: BuildVersion.get()}
+          %{starts: [], machine_id: machine_id(), version: BuildVersion.get(), os: inspect(:os.type())}
       end
 
     store = Map.put(store, :count, Map.get(store, :count, 0) + 1)
     store2 = Map.put(store, :starts, Enum.take(store.starts ++ [:os.system_time(:millisecond)], -10))
-    case File.open(@file_name, [:write]) do
+    case File.open(file_name, [:write]) do
       {:ok, file} ->
         IO.binwrite(file, Poison.encode!(store2))
         File.close(file)
@@ -103,28 +102,17 @@ defmodule Util.Config do
     store2
   end
 
-
-
-          # data.starts ++ [:os.system_time(:millisecond)]
-          # data.count = data.count + 1
-          # %{starts: Enum.take(data.starts, -10), count: data.count}
-          #   File.write(Poison.encode!(%{starts: Enum.take(data.starts, -10), count: data.count}))
-
-
-  # defp file do
-  #   File.open("stats", [:write])
-  #   File
-
   @url "https://www.beamylabs.com/usage"
-  def dispatch_statistics(config) do
-    usage_stats = %{configuration: config, system: update_data()}
+  def dispatch_statistics(config, data_file) do
+    usage_stats = %{configuration: config, system: update_data(data_file)}
     post_data_to_endpoint(Map.get(config, :usage_endpoint, @url), Poison.encode!(usage_stats))
   end
 
-  def init(path) do
-    Logger.debug "paths is #{inspect path}"
+  @system_file "boot"
+  def init(config_file) do
+    Logger.debug "paths is #{inspect config_file}"
     _config =
-      path
+      config_file
       |> File.read()
       |> case do
         {:ok, content} ->
@@ -134,14 +122,14 @@ defmodule Util.Config do
             |> refine()
 
           spawn(fn ->
-            dispatch_statistics(config)
+            dispatch_statistics(config, Path.join(Path.dirname(config_file), @system_file))
           end)
 
           Logger.info("You are running version #{inspect BuildVersion.get()}")
           {:ok, config}
 
         {:error, reason} ->
-          {:stop, "Can't open configuration file (#{path}) reason: #{inspect(reason)}"}
+          {:stop, "Can't open configuration file (#{config_file}) reason: #{inspect(reason)}"}
       end
   end
 

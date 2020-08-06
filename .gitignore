@@ -31,6 +31,8 @@ erl_crash.dump
 /configuration/fibex_files
 /configuration/human_files
 /configuration/boot
+/apps/app_unixds/config/boot
+/apps/signal_base/config/boot
 
 # Ignore flexray.dump
 flexray.dump
