@@ -201,9 +201,9 @@ defmodule Fibex_Parser do
     pdu_task = Task.async(fn -> doc |> getpdus end)
     frames_task = Task.async(fn -> doc |> getframetriggers |> getframes end)
 
-    signals = Task.await(signal_task, 100000)
-    pdus = Task.await(pdu_task, 100000)
-    frames = Task.await(frames_task, 100000)
+    signals = Task.await(signal_task, 300010)
+    pdus = Task.await(pdu_task, 300011)
+    frames = Task.await(frames_task, 300012)
 
     %Fibex{
       :signals => signals,
