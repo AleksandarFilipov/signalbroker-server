@@ -69,7 +69,7 @@ defmodule Payload.Descriptions do
     do: GenServer.call(pid, {:import_dbc_file, path})
 
   def import_fibex_file(pid, path),
-    do: GenServer.call(pid, {:import_fibex_file, path}, 100000)
+    do: GenServer.call(pid, {:import_fibex_file, path}, 300001)
 
   def get_fields_by_names(pid, name),
     do: GenServer.call(pid, {:get_fields_by_names, name}, 100000)
