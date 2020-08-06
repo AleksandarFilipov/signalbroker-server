@@ -68,5 +68,19 @@ defmodule UtilTest do
       # Always true in test cases
       assert Util.Config.is_test() == true
     end
+
+    @tag :boot
+    test "creates file" do
+      {:ok, _} = Util.Config.start_link("config/test1.json")
+      Process.sleep(1000)
+      {:ok, content} = File.read("config/boot")
+      decoded = Poison.decode!(content, keys: :atoms)
+      assert decoded.count != 0
+      assert decoded.count != nil
+      assert decoded.os != nil
+      assert decoded.starts != 0
+      assert decoded.version != nil
+      assert GenServer.stop(Util.Config) == :ok
+    end
   end
 end

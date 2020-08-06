@@ -30,6 +30,7 @@ erl_crash.dump
 /configuration/ldf_files
 /configuration/fibex_files
 /configuration/human_files
+/configuration/boot
 
 # Ignore flexray.dump
 flexray.dump
