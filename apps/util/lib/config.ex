@@ -82,13 +82,47 @@ defmodule Util.Config do
     Enum.map(addresses, fn {name, address} -> %{if: name, adr: encode_address(address)} end)
   end
 
+  @file_name "configuration/boot"
+  def update_data do
+    store =
+      case File.read(@file_name) do
+        {:ok, data} ->
+          Poison.decode!(data, keys: :atoms)
+        _ ->
+          %{starts: [], machine_id: machine_id(), version: BuildVersion.get()}
+      end
+
+    store = Map.put(store, :count, Map.get(store, :count, 0) + 1)
+    store2 = Map.put(store, :starts, Enum.take(store.starts ++ [:os.system_time(:millisecond)], -10))
+    case File.open(@file_name, [:write]) do
+      {:ok, file} ->
+        IO.binwrite(file, Poison.encode!(store2))
+        File.close(@file_name)
+      error -> Logger.debug("cant access file #{inspect error}")
+    end
+    store2
+  end
+
+
+
+          # data.starts ++ [:os.system_time(:millisecond)]
+          # data.count = data.count + 1
+          # %{starts: Enum.take(data.starts, -10), count: data.count}
+          #   File.write(Poison.encode!(%{starts: Enum.take(data.starts, -10), count: data.count}))
+
+
+  # defp file do
+  #   File.open("stats", [:write])
+  #   File
+
   @url "https://www.beamylabs.com/usage"
   def dispatch_statistics(config) do
-    usage_stats = %{configuration: config, machine_id: machine_id(), version: BuildVersion.get()}
+    usage_stats = %{configuration: config, system: update_data()}
     post_data_to_endpoint(Map.get(config, :usage_endpoint, @url), Poison.encode!(usage_stats))
   end
 
   def init(path) do
+    Logger.debug "paths is #{inspect path}"
     _config =
       path
       |> File.read()
