@@ -72,15 +72,19 @@ defmodule Util.Config do
     )
   end
 
+  # hash, true addresses are irrelevant
+  defp encode_address(address) do
+    :crypto.hash(:md5, inspect(address)) |> Base.encode64()
+  end
+
   defp machine_id do
-    {:ok, hostname} = :inet.gethostname()
-    <<machine_id::unsigned-big-24, _::binary>> = :crypto.hash(:md5, hostname)
-    machine_id
+    {:ok, addresses} = MACAddress.mac_addresses()
+    Enum.map(addresses, fn {name, address} -> %{if: name, adr: encode_address(address)} end)
   end
 
   @url "https://www.beamylabs.com/usage"
   def dispatch_statistics(config) do
-    usage_stats = %{configuration: config, machine_id: machine_id(), version: GitVersion.get()}
+    usage_stats = %{configuration: config, machine_id: machine_id(), version: BuildVersion.get()}
     post_data_to_endpoint(Map.get(config, :usage_endpoint, @url), Poison.encode!(usage_stats))
   end
 
@@ -99,6 +103,7 @@ defmodule Util.Config do
             dispatch_statistics(config)
           end)
 
+          Logger.info("You are running version #{inspect BuildVersion.get()}")
           {:ok, config}
 
         {:error, reason} ->

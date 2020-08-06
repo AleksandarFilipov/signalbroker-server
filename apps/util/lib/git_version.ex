@@ -1,4 +1,6 @@
 defmodule GitVersion do
+
+  # This  is not what you are looking for, check BuildVersion below :)
   def get do
     case System.cmd(
            "git",
@@ -25,4 +27,12 @@ defmodule GitVersion do
 
   defp bump_version(%Version{patch: p} = version),
     do: struct(version, patch: p + 1)
+end
+
+defmodule BuildVersion do
+  require GitVersion
+  @build_version GitVersion.get()
+  def get do
+    @build_version
+  end
 end

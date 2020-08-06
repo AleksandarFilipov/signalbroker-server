@@ -63,7 +63,7 @@ end
 # will be used by default
 
 release :signal_server do
-  set(version: GitVersion.get())
+  set(version: BuildVersion.get())
 
   set(
     applications: [
