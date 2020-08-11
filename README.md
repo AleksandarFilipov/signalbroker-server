@@ -1,7 +1,3 @@
-# Important - REDIRECT
-
-This repository is stale. Please go [here](https://github.com/AleksandarFilipov/signalbroker-server) to get access to the most recent code. 
-
 # Signalbroker
 
 [![Build Status](https://travis-ci.com/AleksandarFilipov/signalbroker-server.svg?branch=master)](https://travis-ci.com/github/AleksandarFilipov/signalbroker-server)
@@ -35,7 +31,7 @@ To get you started all you need to do is:
 - Open a terminal/console window.
 - Clone this repo: 
     ```shell
-    $ git clone git@github.com:volvo-cars/signalbroker-server.git
+    $ git clone git@github.com:AleksandarFilipov/signalbroker-server.git
     ```
 - Move to the new folder: 
     ```shell
