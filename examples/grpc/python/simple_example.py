@@ -76,6 +76,27 @@ def read_diagnostics_odb(stub):
     except grpc._channel._Rendezvous as err:
             print(err)
 
+import codecs
+# Engine speed according to ODB standard
+def read_diagnostics_engine_speed(stub):
+    while True:
+
+        source = common_pb2.ClientId(id="app_identifier")
+        namespace = common_pb2.NameSpace(name = "DiagnosticsCanInterface")
+        upLink = common_pb2.SignalId(name="DiagReqBroadCastFrame_2015", namespace=namespace)
+        downLink = common_pb2.SignalId(name="DiagResFrame_2024", namespace=namespace)
+
+        request = diagnostics_api_pb2.DiagnosticsRequest(upLink = upLink, downLink = downLink, serviceId = b'\x01', dataIdentifier = b'\x0C')
+        try:
+                response = stub.SendDiagnosticsQuery(request)
+                print(response)
+                # print(int.from_bytes(response.raw)) python 3.2
+                print(int(codecs.encode(response.raw, 'hex'), 16))
+                print(binascii.hexlify(response.raw))
+        except grpc._channel._Rendezvous as err:
+                print(err)
+
+
 def read_diagnostics_vin(stub):
     source = common_pb2.ClientId(id="app_identifier")
     namespace = common_pb2.NameSpace(name = "ChassisCANhs")
@@ -129,16 +150,21 @@ def publish_signals(stub):
 
 
 def run():
+    # replace localhost with the ip of where the signalbroker is running.
     channel = grpc.insecure_channel('localhost:50051')
     functional_stub = functional_api_pb2_grpc.FunctionalServiceStub(channel)
     network_stub = network_api_pb2_grpc.NetworkServiceStub(channel)
     diag_stub = diagnostics_api_pb2_grpc.DiagnosticsServiceStub(channel)
 
-    print("-------------- Subsribe to fan speed BLOCKING --------------")
-    subscribe_to_fan_signal(network_stub)
+    # print("-------------- Subsribe to fan speed BLOCKING --------------")
+    # subscribe_to_fan_signal(network_stub)
 
     # print("-------------- Read Diagnostics --------------")
     # read_diagnostics_vin(diag_stub)
+
+    print("-------------- Read 01 OC Diagnostics enging speed BLOCKING --------------")
+    read_diagnostics_engine_speed(diag_stub)
+
     #
     # print("-------------- Read Diagnostics --------------")
     # read_diagnostics_odb(diag_stub)
