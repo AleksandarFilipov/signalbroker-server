@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package base;
+
+//  # 0x22 read data by identinifier (Service id)
+//  # 0x1f90 did for vin number (Data identifier)
+
+service DiagnosticsService {
+  rpc SendDiagnosticsQuery (DiagnosticsRequest) returns (DiagnosticsResponse) {}
+}
+
+message DiagnosticsRequest {
+  SignalId upLink = 1;
+  SignalId downLink = 2;
+  bytes serviceId = 3;
+  bytes dataIdentifier = 4;
+}
+
+message DiagnosticsResponse {
+  bytes raw = 5;
+}

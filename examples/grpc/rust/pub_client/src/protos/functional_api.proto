@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// fix this with compiler flag -I
+import "common.proto";
+
+package base;
+
+service FunctionalService {
+  rpc OpenPassWindow (ClientId) returns (Empty) {}
+  rpc ClosePassWindow (ClientId) returns (Empty) {}
+  rpc SetFanSpeed (SenderInfo) returns (Empty) {}
+  rpc SubscribeToFanSpeed (SubscriberRequest) returns (stream Value) {}
+}
+
+// to stop hammering make same call with frequency 0
+message SenderInfo {
+  ClientId clientId = 1;
+  Value value = 2;
+  int32 frequency = 3;
+}
+
+message SubscriberRequest {
+  ClientId clientId = 1;
+  bool onChange = 2;
+}
+
+message Value {
+  int32 payload = 1;
+}

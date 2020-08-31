@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+import "common.proto";
+
+package base;
+
+service SystemService {
+  rpc GetConfiguration (Empty) returns (Configuration) {}
+  rpc ListSignals (NameSpace) returns (Frames) {}
+}
