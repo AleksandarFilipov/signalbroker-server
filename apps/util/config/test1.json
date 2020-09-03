@@ -61,5 +61,6 @@
       "gateway_pid" : "gateway_pid"
    },
    "reflectors" : [],
-   "default_namespace" : "BodyCANhs"
+   "default_namespace" : "BodyCANhs",
+   "tag" : "test"
 }
